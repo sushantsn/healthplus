@@ -192,7 +192,7 @@ Here are a few observations about the data we are going to store:
 ### **7. HIGH LEVEL DESIGN**
 At a high-level, our web servers will manage users’ sessions and application servers will handle all the appointment management, storing data in the databases as well as working with the cache servers to process appointments.
 
-![](diagm.jpg)
+![](diag.jpg)
 ### **8. DETAILED COMPONENT DESIGN**
 Considering our service is being served from a single server.
 
