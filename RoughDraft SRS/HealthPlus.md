@@ -68,7 +68,8 @@ Our appointment booking service should meet the following requirements:
 
 Let’s assume each slot booking needs 50 bytes (IDs, NumberOfAppointments, AppointmentID, ServiceProviderID, AppointmentNumbers, AppointmentStatus, Timestamp, etc.) to store in the database. We would also need to store information about doctors and clinics; let’s assume it’ll take 50 bytes. So, to store all the data about all appointments of all clinics of all cities for a day:
 
-20 cities \* 300 clinics \* 30 slots \* 2 shifts \* (50+50) bytes = 34.33MB / day
+ $$\color{orange}{20 cities * 300 clinics * 30 slots * 2 shifts * (50+50) bytes = 34.33MB / day}$$
+
 
 To store five years of this data, we would need around 62.65GB.
 ### **5. System APIs**
@@ -99,29 +100,29 @@ Here is a sample list of HSP and their AppointmentSlots:
 
         "id": 174,
 
-        "fnm": "Doctor",
+        "fname": "Doctor",
 
-        "snm": "Phil",
+        "sname": "Phil",
 
-        "sal\_nme": "Dr",
+        "sal_name": "Dr",
 
-        "spec\_nme": "Obstetrician-gynecologist",
+        "spec_name": "Obstetrician-gynecologist",
 
         "bio": "Additional Information.",
 
-        "img\_url": "/Images/ProfilePictures/Default/doctor-default.png",
+        "img_url": "/Images/ProfilePictures/Default/doctor-default.png",
 
-        "max\_bok\_day": 60,
+        "max_bok_day": 60,
 
-        "city\_nme": "Pune",
+        "city_name": "Pune",
 
-        "eml": "phil@hsp.com",
+        "email": "phil@hsp.com",
 
         "tel": "0884719728",
 
-        "ful\_nme": "Doctor Phil",
+        "ful_name": "Doctor Phil",
 
-        "first\_avl\_day": "2020-12-06T00:00:00"
+        "first_avl_day": "2020-12-06T00:00:00"
 
     },
 
@@ -129,29 +130,29 @@ Here is a sample list of HSP and their AppointmentSlots:
 
         "id": 149,
 
-        "fnm": "Doctor",
+        "fname": "Doctor",
 
-        "snm": "Who",
+        "sname": "Who",
 
-        "sal\_nme": "Dr",
+        "sal_name": "Dr",
 
-        "spec\_nme": "Allergist",
+        "spec_name": "Allergist",
 
         "bio": "Additional Information.",
 
-        "img\_url": "/Images/ProfilePictures/Stefani.jpg",
+        "img_url": "/Images/ProfilePictures/Stefani.jpg",
 
-        "max\_bok\_day": 60,
+        "max_bok_day": 60,
 
-        "city\_nme": "Mumbai",
+        "city_name": "Mumbai",
 
-        "eml": "who@hsp.com",
+        "email": "who@hsp.com",
 
         "tel": "0887867421",
 
-        "ful\_nme": "Doctor Who",
+        "ful_name": "Doctor Who",
 
-        "first\_avl\_day": "2020-12-01T00:00:00"
+        "first_avl_day": "2020-12-01T00:00:00"
 
     }
 
@@ -159,23 +160,23 @@ Here is a sample list of HSP and their AppointmentSlots:
 ```
 
 **Parameters:**
-**api\_dev\_key (string):** same as above
+**api_dev_key (string):** same as above
 
 |**RESPONSE KEY**|**DESCRIPTION**|
 | :- | :- |
 |**and d**|Doctor Id|
-|**fnm**|Doctor's name|
-|**snm**|Family name|
-|**sal\_nme**|Title|
-|**spec\_nme**|Name of his specialization|
+|**fname**|Doctor's name|
+|**sname**|Family name|
+|**sal_name**|Title|
+|**spec_name**|Name of his specialization|
 |**bio**|Biography of the doctor|
-|**img\_url**|Photo of the doctor|
-|**max\_bok\_day**|Maximum number of days ahead in which an appointment can be reserved with the specific doctor|
-|**city\_nme**|City where the doctor works|
-|**eml**|e-mail to contact the doctor|
+|**img_url**|Photo of the doctor|
+|**max_bok_day**|Maximum number of days ahead in which an appointment can be reserved with the specific doctor|
+|**city_name**|City where the doctor works|
+|**email**|e-mail to contact the doctor|
 |**tel**|Phone number to contact the doctor|
-|**full\_nme**|Doctor's full name|
-|**first\_avl\_day**|First available date to reserve an appointment|
+|**full_name**|Doctor's full name|
+|**first_avl_day**|First available date to reserve an appointment|
 
 **Returns:** (JSON)
 Returns the status of the appointment, which would be one of the following: 1) “Appointment Successful” 2) “Appointment Failed – Slot Full,” 3) “Appointment Failed – Retry, as other users are holding reserved slots”.
@@ -187,7 +188,7 @@ Here are a few observations about the data we are going to store:
 1. Each Doctor will have many shifts and each shift will have multiple Bookings.
 1. A doctor can have multiple bookings.
 
-![](er.jpeg)
+![](placeholder.jpg)
 ### **7. High Level Design**
 At a high-level, our web servers will manage users’ sessions and application servers will handle all the appointment management, storing data in the databases as well as working with the cache servers to process appointments.
 
@@ -248,21 +249,17 @@ On the server, ActiveReservationsService keeps track of expiry (based on reserva
 ```mysql
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
-,
-
 BEGIN TRANSACTION;
 
-/\*Check for any existing bookings that overlap with period of 10am-11pm\*/
+/*Check for any existing bookings that overlap with period of 10am-11pm*/
 
-SELECT COUNT(\*) FROM bookings\_table WHERE room\_id = 897 AND meeting\_end\_time > ‘2020–04–20 10:00’ AND start\_time < ‘2020–04–20 11:00’;
+SELECT COUNT * FROM bookings_table WHERE room_id = 897 AND meeting_end_time > ‘2020–04–20 10:00’ AND start_time < ‘2020–04–20 11:00’;
 
-/\*If the previous query returned zero\*/
+/*If the previous query returned zero*/
 
-INSERT INTO bookings (room\_id, start\_time, end\_time, user\_id) VALUES (123, ‘2015–01–01 12:00’, ‘2015–01–01 13:00’, 666);
+INSERT INTO bookings (room_id, start_time, end_time, user_id) VALUES (123, ‘2015–01–01 12:00’, ‘2015–01–01 13:00’, 666);
 
 COMMIT;
-
-​
 
 COMMIT TRANSACTION;
 ```
