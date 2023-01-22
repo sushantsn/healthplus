@@ -1,10 +1,10 @@
-﻿# **Design HealthPlus**
+﻿# **HEALTHPLUS**
 Online booking system that manages healthcare related services with the convenience of BookMyShow or Amazon.
 
 Similar Services: practo.com, lybrate.com,myupchar.com.
-### **1. What is an online appointment booking system?**
+### **1.ONLINE APPOINTMENT BOOKING SYSTEM**
 A doctor/lab service booking system provides its customers the ability to purchase appointments online. E-appointment systems allow the customers to browse through doctors within their region with speciality and experience and ratings based on previous user reviews and book appointments anywhere anytime.
-### **2. Requirements and Goals of the System**
+### **2. REQUIREMENTS AND GOALS OF THE SYSTEM**
 Our appointment booking service should meet the following requirements:
 
 **Functional Requirements:**
@@ -55,13 +55,13 @@ Our appointment booking service should meet the following requirements:
 1. Reliability:
 
 ● Availability: The system is available all the time.
-### **3. Some Design Considerations**
+### **3. SOME DESIGN CONSIDERATIONS**
 1. For simplicity, let’s assume our service does not require any user authentication.
 1. The system will not handle telephonic appointment orders. Either user books by internet or the staff logs the booking based on the telephone conversation thus occupying the slot.
 1. Fairness is mandatory for the system.
 1. To stop system abuse, we can restrict users from booking more than one appointment at a time.
 1. We can assume that traffic would spike on flu season or viral endemic outbreak and the appointments would fill up pretty fast. The system should be scalable and highly available to keep up with the surge in traffic.
-### **4. Capacity Estimation**
+### **4. CAPACITY ESTIMATION**
 **Traffic estimates:** Let’s assume that our service has 1 million(1 Cr,1,000,000) page views per month and handles 30 thousand(30,000) appointments a month.
 
 **Storage estimates:** Let’s assume that we have 20 cities and, on average each city has 300 hospital/clinics/doctors. If there are 36 time slots with each service provider and on average, there are two shifts every day.
@@ -72,7 +72,7 @@ Let’s assume each slot booking needs 50 bytes (IDs, NumberOfAppointments, Appo
 
 
 To store five years of this data, we would need around 62.65GB.
-### **5. System APIs**
+### **5. SYSTEM APIs**
 We can have SOAP or REST APIs to expose the functionality of our service. The following could be the definition of the APIs to search doctors and reserve slots.
 
 SearchDoctors(api\_dev\_key, keyword, city, lat\_long, radius, start\_datetime, end\_datetime, postal\_code,
@@ -180,7 +180,7 @@ Here is a sample list of HSP and their AppointmentSlots:
 
 **Returns:** (JSON)
 Returns the status of the appointment, which would be one of the following: 1) “Appointment Successful” 2) “Appointment Failed – Slot Full,” 3) “Appointment Failed – Retry, as other users are holding reserved slots”.
-### **6. Database Design**
+### **6. DATABASE DESIGN**
 Here are a few observations about the data we are going to store:
 
 1. Each City can have multiple Clinics.
@@ -189,11 +189,11 @@ Here are a few observations about the data we are going to store:
 1. A doctor can have multiple bookings.
 
 ![](placeholder.jpg)
-### **7. High Level Design**
+### **7. HIGH LEVEL DESIGN**
 At a high-level, our web servers will manage users’ sessions and application servers will handle all the appointment management, storing data in the databases as well as working with the cache servers to process appointments.
 
 ![](diag.png)
-### **8. Detailed Component Design**
+### **8. DETAILED COMPONENT DESIGN**
 Considering our service is being served from a single server.
 
 **Appointment Booking Workflow:** The following would be a typical appointment booking workflow:
@@ -244,7 +244,7 @@ Clients can use [Long Polling](https://en.wikipedia.org/wiki/Push_technology#Lon
 
 **Reservation Expiration**
 On the server, ActiveReservationsService keeps track of expiry (based on reservation time) of active reservations. As the client will be shown a timer (for the expiration time), which could be a little out of sync with the server, we can add a buffer of five seconds on the server to safeguard from a broken experience, such that the client never times out after the server, preventing a successful purchase.
-### **9. Concurrency**
+### **9. CONCURRENCY**
 **How to handle concurrency, such that no two users are able to book same time slot.** We can use transactions in SQL databases to avoid any clashes. For example, if we are using an SQL server we can utilize [Transaction Isolation Levels](https://docs.microsoft.com/en-us/sql/odbc/reference/develop-app/transaction-isolation-levels) to lock the rows before we can update them. Here is the sample code:
 ```mysql
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
@@ -267,12 +267,12 @@ COMMIT TRANSACTION;
 ‘Serializable’ is the highest isolation level and guarantees safety from [Dirty](https://en.wikipedia.org/wiki/Isolation_\(database_systems\)#Dirty_reads), [Nonrepeatable](https://en.wikipedia.org/wiki/Isolation_\(database_systems\)#Non-repeatable_reads), and [Phantoms](https://en.wikipedia.org/wiki/Isolation_\(database_systems\)#Phantom_reads) reads. One thing to note here; within a transaction, if we read rows, we get a write lock on them so that they can’t be updated by anyone else.
 
 Once the above database transaction is successful, we can start tracking the reservation in ActiveReservationService.
-### **10. Fault Tolerance**
+### **10. FAULT TOLERANCE**
 **What happens when ActiveReservationsService or WaitingUsersService crashes?**
 Whenever ActiveReservationsService crashes, we can read all the active reservations from the ‘Booking’ table. Remember that we keep the ‘Status’ column as ‘Reserved (1)’ until a reservation gets booked. Another option is to have a main-child configuration so that, when the main crashes, the child can take over. We are not storing the waiting users in the database, so, when WaitingUsersService crashes, we don’t have any means to recover that data unless we have a main-child setup.
 
 Similarly, we’ll have a main-child setup for databases to make them fault tolerant.
-### **11. Data Partitioning**
+### **11. DATA PARTITIONING**
 **Database partitioning:** If we partition by ‘CityID’, then all the slots of a doctor will be on a single server. For a very hectic flu season, this could cause a lot of load on that server. A better approach would be to partition based on DoctorID; this way, the load gets distributed among different servers.
 
 **ActiveReservationService and WaitingUserService partitioning:** Our web servers will manage all the active users’ sessions and handle all the communication with the users. We can use the Consistent Hashing to allocate application servers for both ActiveReservationService and WaitingUserService based upon the ‘DoctorID’. This way, all reservations and waiting users of a particular doctor will be handled by a certain set of servers. Let’s assume for load balancing our [Consistent Hashing](https://www.educative.io/collection/page/5668639101419520/5649050225344512/5709068098338816) allocates three servers for any city, so whenever a reservation is expired, the server holding that reservation will do the following things:
@@ -289,7 +289,7 @@ Whenever a reservation is successful, following things will happen:
 1. Upon receiving the above message, all servers holding the waiting users will query the database to find how many free slots are available now. A database cache would greatly help here to run this query only once.
 1. Expire all waiting users who want to reserve more slots than the available slots. For this, WaitingUserService has to iterate through the Linked HashMap of all the waiting users.
 
-12.HARDWARE REQUIREMENTS
+### **12.HARDWARE REQUIREMENTS**
 
 Minimum requirements:
 
