@@ -164,7 +164,7 @@ Here is a sample list of HSP and their AppointmentSlots:
 
 |**RESPONSE KEY**|**DESCRIPTION**|
 | :- | :- |
-|**and d**|Doctor Id|
+|**id**|Doctor Id|
 |**fname**|Doctor's name|
 |**sname**|Family name|
 |**sal_name**|Title|
