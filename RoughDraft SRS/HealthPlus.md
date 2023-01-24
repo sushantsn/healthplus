@@ -3,7 +3,7 @@ Online booking system that manages healthcare related services with the convenie
 
 Similar Services: practo.com, lybrate.com,myupchar.com.
 ### **1.ONLINE APPOINTMENT BOOKING SYSTEM**
-A doctor/lab service booking system provides its customers the ability to purchase appointments online. E-appointment systems allow the customers to browse through doctors within their region with speciality and experience and ratings based on previous user reviews and book appointments anywhere anytime.
+A doctor/lab service booking system provides its customers the ability to book appointments online. E-appointment systems allow the customers to browse through doctors within their region with speciality and experience and ratings based on previous user reviews and book appointments anywhere anytime.
 ### **2. REQUIREMENTS AND GOALS OF THE SYSTEM**
 Our appointment booking service should meet the following requirements:
 
