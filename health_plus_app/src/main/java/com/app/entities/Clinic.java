@@ -12,9 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "clinics")
 public class Clinic extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+
 
     private String name;
 
@@ -32,13 +30,6 @@ public class Clinic extends BaseEntity {
 
     public Clinic() {}
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

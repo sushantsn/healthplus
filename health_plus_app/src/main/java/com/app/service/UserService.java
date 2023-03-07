@@ -1,7 +1,5 @@
 package com.app.service;
 
-import javax.validation.Valid;
-
 import com.app.entities.User;
 import com.app.model.bind.UserRegistrationModel;
 
