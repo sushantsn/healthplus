@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,14 +18,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.healthplus.entity.Patient;
+import com.healthplus.model.PatientViewModel;
+import com.healthplus.services.DoctorService;
 import com.healthplus.services.PatientService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+
 @RestController
 @RequestMapping("/api/v1/")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PatientController {
+    private PatientService patientService;
+//
+//    private DoctorService doctorService;
+//
+//    @Autowired
+//    public PatientController(PatientService patientService, DoctorService doctorService) {
+//        this.patientService = patientService;
+//        this.doctorService = doctorService;
+//    }
 
-    private final PatientService patientService;
 
     public PatientController(PatientService patientService) {
         this.patientService = patientService;
@@ -38,6 +51,15 @@ public class PatientController {
     public List<Patient> getAllPatients() {
         return  patientService.getAllPatients();
     }
+    
+//    @GetMapping("/patient/{id}")
+//    public String getPatient(@PathVariable long id, Model model) {
+//        PatientViewModel patientViewModel = this.patientService.getById(id);
+//
+//        model.addAttribute("patientViewModel", patientViewModel);
+//
+//        return "patient/patient";
+//    }
 
     @DeleteMapping("/patients/{id}")
     public ResponseEntity<Map<String,Boolean>> deletePatient(@PathVariable Long id) {
