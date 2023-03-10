@@ -3,7 +3,6 @@ package com.healthplus.services;
 import java.util.List;
 
 import com.healthplus.entity.Patient;
-import com.healthplus.model.PatientViewModel;
 
 public interface PatientService {
     Patient createPatient(Patient employee);
@@ -15,6 +14,4 @@ public interface PatientService {
     Patient getPatientById(Long id);
 
     Patient updatePatient(Long id, Patient employee);
-
-	PatientViewModel getById(long id);
 }
