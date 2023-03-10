@@ -31,14 +31,35 @@ public class DoctorServiceImpl implements DoctorService{
     public List<Doctor> getAllDoctors() {
         List<Doctor> doctorEntities
                 = doctorRepository.findAll();
-
+/*		this.firstName = firstName;
+		this.lastName = lastName;
+		this.emailId = emailId;
+		this.gender = gender;
+		this.telephoneNumber = telephoneNumber;
+		this.dateOfBirth = dateOfBirth;
+		this.startPracticeDate = startPracticeDate;
+		this.location = location;
+		this.address = address;
+		this.description = description;
+		this.picturePath = picturePath;
+		this.patients = patients;
+		this.appointments = appointments;*/
         List<Doctor> doctors = doctorEntities
                 .stream()
                 .map(emp -> new Doctor(
-                        emp.getId(),
                         emp.getFirstName(),
                         emp.getLastName(),
-                        emp.getEmailId()))
+                        emp.getEmailId(),
+                        emp.getGender(),
+                        emp.getTelephoneNumber(),
+                        emp.getDateOfBirth(),
+                        emp.getStartPracticeDate(),
+                        emp.getLocation(),
+                        emp.getAddress(),
+                        emp.getDescription(),
+                        emp.getPicturePath(),
+                        emp.getPatients(), 
+                        emp.getAppointments()))
                 .collect(Collectors.toList());
         return doctors;
     }
